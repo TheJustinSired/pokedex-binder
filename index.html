@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#d91f26">
+<meta name="description" content="Your personal National Pokédex and Pokémon card binder tracker.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pokédex Binder">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Pokédex Binder — Card Tracker</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2c;--panel2:#182238;--line:#2a3650;--text:#f4f7fb;--muted:#a7b4ca;--accent:#f6c945;--green:#68d6a3;--red:#f47c83}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#1c2a48 0,transparent 35%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:24px 18px 50px}.hero{display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px}
+.brand{display:flex;gap:14px;align-items:center}.ball{width:56px;height:56px;border-radius:50%;background:linear-gradient(#f05252 0 46%,#20293c 46% 54%,#f8fafc 54%);border:4px solid #f8fafc;position:relative;box-shadow:0 0 0 3px #20293c}.ball:after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;border:4px solid #20293c;background:#f8fafc;left:50%;top:50%;transform:translate(-50%,-50%)}
+h1{font-size:clamp(27px,4vw,40px);line-height:1.05;margin:0;letter-spacing:-1.2px}h1 span{color:var(--accent)}.sub{color:var(--muted);margin-top:6px}.actions{display:flex;gap:9px;flex-wrap:wrap}
+button,.btn{border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:10px 13px;font-weight:650;cursor:pointer}button:hover,.btn:hover{filter:brightness(1.14)}button.primary{background:var(--accent);color:#191919;border-color:var(--accent)}button.danger{color:#ffd4d4}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat{background:linear-gradient(145deg,var(--panel),#101728);border:1px solid var(--line);border-radius:16px;padding:15px}.stat .n{font-size:27px;font-weight:800;letter-spacing:-.6px}.stat .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.progress{height:8px;border-radius:20px;background:#263149;overflow:hidden;margin-top:12px}.progress div{height:100%;background:linear-gradient(90deg,var(--green),#b3f1cb);width:0%;transition:width .2s}
+.toolbar{display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(3,minmax(130px,.7fr));gap:10px;margin-bottom:13px}.field{width:100%;background:#0e1627;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit;outline:none}.field:focus{border-color:var(--accent)}
+.tabs{display:flex;gap:7px;overflow:auto;padding:3px 0 14px}.tab{white-space:nowrap}.tab.active{background:var(--accent);color:#171717;border-color:var(--accent)}
+.notice{border:1px solid #574d2a;background:#262314;color:#f6e8a8;padding:12px 14px;border-radius:12px;margin-bottom:15px;font-size:13px}
+.resultshead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:10px 0 13px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.card{position:relative;min-width:0;background:linear-gradient(150deg,#172238,#101727);border:1px solid var(--line);border-radius:15px;overflow:hidden;transition:transform .15s,border-color .15s}.card:hover{transform:translateY(-2px);border-color:#667797}.card.owned{border-color:#4f9f80}.card.favorite{box-shadow:inset 0 0 0 1px var(--accent)}.art{height:135px;background:radial-gradient(circle,#273858,#121a2c 70%);display:flex;align-items:center;justify-content:center;position:relative}.art img{width:125px;height:125px;object-fit:contain;image-rendering:auto}.num{position:absolute;top:9px;left:9px;background:#090e19bd;color:#b9c5d7;border:1px solid #35415a;border-radius:7px;padding:3px 6px;font-size:11px;font-weight:750}.ownedmark{position:absolute;right:9px;top:9px;background:#174c3c;color:#aaf0d2;border-radius:7px;padding:3px 6px;font-size:10px;font-weight:800}.cardbody{padding:11px}.name{font-weight:750;font-size:15px;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:11px;color:var(--muted);margin:3px 0 10px}.cardbuttons{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mini{font-size:11px;padding:7px 5px;border-radius:8px}.mini.checked{background:#174c3c;border-color:#317b61;color:#c2f6df}.mini.star.checked{background:#4a3b13;border-color:#a68a2c;color:#ffe69b}
+.empty{padding:45px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:15px;grid-column:1/-1}
+.footer{margin-top:25px;color:var(--muted);font-size:12px;text-align:center}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#e8f8ef;color:#103a2b;padding:10px 15px;border-radius:10px;font-weight:700;box-shadow:0 8px 30px #0005;display:none;z-index:5}
+@media(max-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.wrap{padding:18px 12px 35px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.art{height:125px}.art img{height:115px;width:115px}.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.actions{width:100%}.actions button{flex:1}.stat .n{font-size:24px}}
+
+/* Classic handheld Pokédex-inspired shell */
+:root{--bg:#09111c;--panel:#071a2a;--panel2:#102b42;--line:#24516d;--text:#eef8ff;--muted:#9bb7c9;--accent:#39c9f4;--green:#5de0a3;--red:#ff626b}
+body{background:radial-gradient(ellipse at top,#39465a 0,#111b29 38%,#060a10 100%);padding:18px 0 28px}
+.wrap{max-width:1120px;background:linear-gradient(135deg,#f52f36,#bd111b 65%,#8f1019);border:3px solid #ff7276;border-radius:32px;padding:17px 17px 22px;box-shadow:0 20px 70px #000a,inset 0 2px 2px #ffffff80;position:relative}
+.hero{background:linear-gradient(180deg,#e8f5fc,#9dc6df);border:5px solid #222d3a;border-radius:18px;padding:14px 16px;color:#102638;box-shadow:inset 0 0 0 2px #fff8;margin-bottom:14px}
+.brand{gap:12px}.ball{flex:0 0 auto;width:48px;height:48px;border-color:#172635;box-shadow:0 0 0 2px #f4f8fb}.brand h1{color:#132c42;text-transform:uppercase;letter-spacing:-.5px;font-size:clamp(23px,4vw,36px)}h1 span{color:#006d9c}.sub{color:#294a60;font-weight:650}
+.actions button{background:#142f45;border-color:#3b657d;color:#eef8ff}.actions button.primary{background:#24c4ee;color:#062538;border-color:#7ce6ff}
+.stats{gap:9px}.stat{border:2px solid #294b63;border-radius:12px;background:linear-gradient(145deg,#0c2c43,#071725);box-shadow:inset 0 1px #ffffff14}.stat .n{color:#f4fbff}.progress{background:#142c40}.progress div{background:linear-gradient(90deg,#28bfe9,#a2f3ff)}
+.notice{border:1px solid #f2bd4d;background:#fff2c9;color:#4b3510}.field{background:#061a29;border:2px solid #2a5a76;border-radius:9px}.field:focus{border-color:#38d4ff}
+.tab{border-radius:7px;background:#102c42}.tab.active{background:#4ad8fa;color:#052538;border-color:#8ceaff}.grid{gap:10px}.card{border:2px solid #25516a;border-radius:11px;background:linear-gradient(150deg,#123b56,#071a29);box-shadow:0 3px 0 #040b12}.card.owned{border-color:#3ed49b}.card.favorite{box-shadow:inset 0 0 0 2px #f7c74c}.art{background:radial-gradient(circle,#a9d9ec,#4c8eaf 70%);border-bottom:2px solid #2d6683}.art img{image-rendering:pixelated;filter:drop-shadow(0 2px 1px #15364a66)}.num{background:#092237;color:#c4f3ff;border-color:#4c8ca9}.ownedmark{background:#0a6549;color:#d5fff0}.cardbody{padding:10px}.name{color:#f1fbff}.meta{color:#a5c7d9}.mini{background:#10334a;border-color:#2e607c}.mini.checked{background:#0d6047;border-color:#3ad5a0}.mini.star.checked{background:#66501a;border-color:#d6ae37;color:#fff0ae}
+.footer{color:#ffe4e5}.toast{bottom:24px}
+@media(max-width:650px){body{padding:0;background:#b81620}.wrap{border-radius:0;border-left:0;border-right:0;padding:10px 10px 25px;min-height:100vh}.hero{padding:12px;border-width:4px;border-radius:14px}.brand{align-items:center}.brand h1{font-size:25px}.actions button{padding:9px 10px}.stats{gap:7px}.stat{padding:11px}.stat .n{font-size:23px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.art{height:122px}.art img{height:112px;width:112px}.toolbar{gap:7px}.tabs{padding-bottom:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="brand"><div class="ball" aria-hidden="true"></div><div><h1>Pokédex <span>Binder</span></h1><div class="sub">National Pokédex · Card collection scanner · #0001–#1025</div></div></div>
+    <div class="actions"><button id="installBtn" hidden>＋ Install app</button><button id="exportBtn">Export backup</button><button id="importBtn">Import backup</button><input id="importFile" type="file" accept="application/json" hidden><button class="primary" id="addNoteBtn">How it works</button></div>
+  </header>
+  <section class="stats">
+    <div class="stat"><div class="label">Pokémon collected</div><div class="n" id="ownedCount">0 <small style="font-size:13px;color:var(--muted)">/ 1025</small></div><div class="progress"><div id="progressBar"></div></div></div>
+    <div class="stat"><div class="label">Completion</div><div class="n" id="percent">0%</div><div class="sub">One card per species</div></div>
+    <div class="stat"><div class="label">Favourite upgrades</div><div class="n" id="favCount">0</div><div class="sub">Your best card for a species</div></div>
+    <div class="stat"><div class="label">Still missing</div><div class="n" id="missingCount">1,025</div><div class="sub">Keep hunting!</div></div>
+  </section>
+  <div class="notice"><strong>Pokédex Binder:</strong> Add this app to your Home Screen for a dedicated app icon. <strong>Save your progress:</strong> this website stores your checklist in this browser on this device. Use <em>Export backup</em> regularly to keep a copy, or transfer progress with Export/Import.</div>
+  <div class="toolbar">
+    <input class="field" id="search" placeholder="Search Pokémon or Pokédex number…" aria-label="Search Pokémon">
+    <select class="field" id="status"><option value="all">All Pokémon</option><option value="owned">Collected</option><option value="missing">Missing</option><option value="favorite">Favourite / upgraded</option></select>
+    <select class="field" id="generation"><option value="all">All generations</option><option value="1">Gen 1 · Kanto</option><option value="2">Gen 2 · Johto</option><option value="3">Gen 3 · Hoenn</option><option value="4">Gen 4 · Sinnoh</option><option value="5">Gen 5 · Unova</option><option value="6">Gen 6 · Kalos</option><option value="7">Gen 7 · Alola</option><option value="8">Gen 8 · Galar</option><option value="9">Gen 9 · Paldea</option></select>
+    <select class="field" id="sort"><option value="dex">National Pokédex order</option><option value="name">Name A–Z</option><option value="reverse">Reverse Pokédex order</option></select>
+  </div>
+  <nav class="tabs" aria-label="Quick filters">
+    <button class="tab active" data-tab="all">All 1,025</button><button class="tab" data-tab="missing">Need to catch</button><button class="tab" data-tab="owned">In my binder</button><button class="tab" data-tab="favorite">Top picks ★</button>
+  </nav>
+  <div class="resultshead"><span id="resultCount">Loading Pokédex…</span><span>Tap a card to mark it collected</span></div>
+  <main class="grid" id="grid"><div class="empty">Loading all Pokémon…<br><small>First load needs an internet connection.</small></div></main>
+  <div class="footer">Made for your card-collecting journey · Progress stays in this browser unless you export it.</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  const TOTAL=1025, KEY='pokedex-binder-progress-v1';
+  const genRanges=[0,151,251,386,493,649,721,809,905,1025];
+  let pokemon=[], progress={}, activeTab='all', renderTimer=null;
+  const $=id=>document.getElementById(id);
+  const niceName=s=>s.split('-').map((part,i)=> {
+    const specials={'mr':'Mr.','mime':'Mime','jr':'Jr.','type':'Type','null':'Null','farfetchd':"Farfetch'd",'sirfetchd':"Sirfetch'd",'ho-oh':'Ho-Oh','porygon-z':'Porygon-Z'};
+    if(specials[s]) return specials[s];
+    if(part==='nidoran-f') return 'Nidoran♀'; if(part==='nidoran-m') return 'Nidoran♂';
+    if(part==='flabebe') return 'Flabébé';
+    return part.charAt(0).toUpperCase()+part.slice(1);
+  }).join('-').replace('Mr.-Mime','Mr. Mime').replace('Mr.-Rime','Mr. Rime').replace('Mime-Jr.','Mime Jr.').replace('Type-Null','Type: Null').replace('Ho-Oh','Ho-Oh').replace('Farfetchd',"Farfetch'd").replace('Sirfetchd',"Sirfetch'd");
+  function loadProgress(){try{progress=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){progress={}}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(progress))}catch(e){toast('Could not save locally. Export a backup.')} updateStats()}
+  function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display='none',2400)}
+  function genFor(n){for(let g=1;g<=9;g++)if(n<=genRanges[g])return g;return 9}
+  function updateStats(){const owned=Object.values(progress).filter(v=>v&&v.owned).length;const fav=Object.values(progress).filter(v=>v&&v.favorite).length;$('ownedCount').innerHTML=`${owned.toLocaleString()} <small style="font-size:13px;color:var(--muted)">/ 1,025</small>`;$('percent').textContent=(owned/TOTAL*100).toFixed(1)+'%';$('favCount').textContent=fav.toLocaleString();$('missingCount').textContent=(TOTAL-owned).toLocaleString();$('progressBar').style.width=(owned/TOTAL*100)+'%';}
+  function card(p){const d=progress[p.id]||{};const el=document.createElement('article');el.className='card'+(d.owned?' owned':'')+(d.favorite?' favorite':'');const img=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`;el.innerHTML=`<div class="art"><span class="num">#${String(p.id).padStart(4,'0')}</span>${d.owned?'<span class="ownedmark">✓ COLLECTED</span>':''}<img loading="lazy" src="${img}" alt="${p.name}" onerror="this.style.opacity='.15'"></div><div class="cardbody"><div class="name" title="${p.name}">${p.name}</div><div class="meta">Generation ${genFor(p.id)} · #${p.id}</div><div class="cardbuttons"><button class="mini ${d.owned?'checked':''}" data-action="owned" aria-label="Toggle collected">${d.owned?'✓ Collected':'+ Collected'}</button><button class="mini star ${d.favorite?'checked':''}" data-action="favorite" aria-label="Toggle favourite">${d.favorite?'★ Top pick':'☆ Top pick'}</button></div></div>`;el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const action=b.dataset.action;progress[p.id]=progress[p.id]||{};progress[p.id][action]=!progress[p.id][action];if(!progress[p.id].owned&&!progress[p.id].favorite)delete progress[p.id];save();scheduleRender()}));return el}
+  function render(){const q=$('search').value.trim().toLowerCase().replace(/^#/,'');const status=$('status').value;const g=$('generation').value;const sort=$('sort').value;let list=pokemon.filter(p=>{const d=progress[p.id]||{};const searchMatch=!q||p.name.toLowerCase().includes(q)||String(p.id).padStart(4,'0').includes(q)||String(p.id)===q;const tabMatch=activeTab==='all'||(activeTab==='owned'&&d.owned)||(activeTab==='missing'&&!d.owned)||(activeTab==='favorite'&&d.favorite);const statusMatch=status==='all'||(status==='owned'&&d.owned)||(status==='missing'&&!d.owned)||(status==='favorite'&&d.favorite);return searchMatch&&tabMatch&&statusMatch&&(g==='all'||genFor(p.id)===Number(g))});if(sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name));if(sort==='reverse')list.reverse();$('resultCount').textContent=`Showing ${list.length.toLocaleString()} Pokémon`;const grid=$('grid');grid.innerHTML='';if(!list.length){grid.innerHTML='<div class="empty">No Pokémon match those filters.<br><small>Try another search or filter.</small></div>';return}const frag=document.createDocumentFragment();list.forEach(p=>frag.appendChild(card(p)));grid.appendChild(frag)}
+  function scheduleRender(){clearTimeout(renderTimer);renderTimer=setTimeout(render,100)}
+  async function init(){loadProgress();updateStats();try{const res=await fetch('https://pokeapi.co/api/v2/pokemon-species?limit=1025');if(!res.ok)throw Error('API unavailable');const data=await res.json();pokemon=data.results.map((x,i)=>({id:i+1,name:niceName(x.name)}));render()}catch(e){$('grid').innerHTML='<div class="empty"><strong>Could not load the Pokédex.</strong><br>Connect to the internet and reload this page. The tracker loads the official species list from PokéAPI.</div>';$('resultCount').textContent='Offline';}}
+  ['search','status','generation','sort'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',scheduleRender));
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{activeTab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));render()}));
+  $('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({app:'Pokedex Binder',version:1,progress},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='pokedex-binder-backup.json';a.click();URL.revokeObjectURL(url);toast('Backup exported')});
+  $('importBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());const incoming=data.progress||data;if(!incoming||typeof incoming!=='object')throw Error();if(!confirm('Import this backup and replace the progress currently in this browser?'))return;progress=incoming;save();render();toast('Backup imported')}catch(err){alert('That backup file could not be read. Choose a valid Pokédex Binder JSON backup.')}e.target.value=''});
+  $('addNoteBtn').addEventListener('click',()=>alert('HOW TO USE YOUR POKÉDEX BINDER\\n\\n1. Search a Pokémon or browse by National Pokédex number.\\n2. Tap “+ Collected” when you have a card for that Pokémon.\\n3. Tap “☆ Top pick” for your favourite card / best upgrade for that species.\\n4. Use filters to see missing Pokémon, collected entries, or favourites.\\n5. Export a backup regularly. Import it on another device to restore your progress.\\n\\nThis tracker counts one entry per species. It does not track individual card sets or variants—that is best handled in your separate master-set checklist.'));
+  let installPrompt=null;
+  const installBtn=$('installBtn');
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;installBtn.hidden=false;});
+  installBtn.addEventListener('click',async()=>{if(!installPrompt){alert('On iPhone: open this website in Safari, tap Share, then “Add to Home Screen”.');return}installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installBtn.hidden=true;});
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  init();
+})();
+</script>
+</body>
+</html>
